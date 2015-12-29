@@ -16,21 +16,23 @@ Options:
   -h, --help  show this help message and exit
 
 # Examples
-> ./ChEWS.py laura
+
+```
+./ChEWS.py laura
 ChEWS - Chemical Element Word Solver
 found solution - target = laura answer = LaURa
 [57, 92, 88]
 
-> ./ChEWS.py nicola
+./ChEWS.py nicola
 ChEWS - Chemical Element Word Solver
 found solution - target = nicola answer = NICOLa
 [7, 53, 6, 8, 57]
 
-> ./ChEWS.py gina
+./ChEWS.py gina
 ChEWS - Chemical Element Word Solver
    Oh no - failed completely
 Failed to Find Solution for gina
-
+```
 
 # Credits
 Elements Data from 

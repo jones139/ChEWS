@@ -37,3 +37,13 @@ Failed to Find Solution for gina
 # Credits
 Elements Data from 
 https://raw.githubusercontent.com/diniska/chemistry/master/PeriodicalTable/periodicTable.json
+
+svgwrite library from https://bitbucket.org/mozman/svgwrite
+cairoSVG from https://github.com/Kozea/CairoSVG.git
+cairocffi from https://github.com/SimonSapin/cairocffi.git
+cssselect from https://pypi.python.org/pypi/cssselect
+tinycss from https://pypi.python.org/pypi/tinycss
+
+Changes to library files:
+cairoSVG - added encoding string to each file.  Modified names of url
+libraries for compatibility with python 2.x rather than 3.x

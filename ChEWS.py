@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 #############################################################################
 #
@@ -23,8 +24,10 @@
 ##############################################################################
 #
 
-"""ChEWS - Chemical Element Word Solver - spell names using chemical element
-symbols."""
+"""
+ChEWS - Chemical Element Word Solver - spell names using chemical element
+symbols.
+"""
  
 __appname__ = "ChEWS"
 __author__  = "Graham Jones"
@@ -33,6 +36,7 @@ __license__ = "GNU GPL 3.0 or later"
 
 
 import json
+import svgwrite
 
 class ChEWS:
     periodicTable = None
@@ -173,7 +177,94 @@ class ChEWS:
 
     #####################################################
 
+    def getElemObj(self,elemNo):
+        """ 
+        Return the python object representing element with atomic number
+        elemNo.  Returns None if elemNo is not found in the database.
+        """
+        for elemObj in self.elemArray:
+            if (elemObj['number']==elemNo):
+                return elemObj
+        return None
+
+
+    def svgrender(self,elemObj,xpos=0,boxX=120,boxY=130):
+        """
+        Render an element elemObj into an SVG file and return the svgwrite
+        Drawing object.   xpos is the positon of the objects in the drawing.
+        boxX and boxY are the size of the drawing.
+        """
+        fontSize = 70
+        smallFontSize = fontSize/5
         
+        # No, I don't know why the viewbox offset is -xpos rather than xpos
+        # either, but it has to be negative for them to appear in the right
+        # place!
+        dwg = svgwrite.Drawing(None,
+                               size=(toPt(boxX),toPt(boxY)),
+                               viewBox=("%d %d %d %d" %
+                                        (offset((0,0),-xpos,0)+
+                                         offset((boxX,boxY),0,0))))
+        dwg.add(dwg.rect((0,0),(boxX,boxY),
+                         stroke='black',
+                         fill='white'))
+        
+        textOrigin = (5,smallFontSize+fontSize)
+
+        # Main Symbol
+        textElem = dwg.text("", insert=offset(textOrigin,smallFontSize/2,0))
+        textElem.add(dwg.tspan(elemObj['small'],
+                               font_size="%dpt" % fontSize,
+                               fill='black'))
+        dwg.add(textElem)
+
+        # Atomic Weight
+        textElem = dwg.text("", insert=offset(textOrigin,0,-1*fontSize))
+        textElem.add(dwg.tspan("%5.1f" % elemObj['molar'],
+                          font_size=toPt(smallFontSize),
+                          fill='black'))
+        dwg.add(textElem)
+
+        # Atomic Number
+        textElem = dwg.text("", insert=offset(textOrigin,0,+1.5*smallFontSize))
+        textElem.add(dwg.tspan("%2d" % elemObj['number'],
+                               font_size=toPt(smallFontSize),
+                               fill='black'))
+        dwg.add(textElem)
+
+        # Name
+        textElem = dwg.text("", insert=offset(textOrigin,0,+smallFontSize*3))
+        textElem.add(dwg.tspan(elemObj['name'],
+                               font_size=toPt(smallFontSize),
+                               fill='black'))
+        dwg.add(textElem)
+        #dwg.save()
+        return dwg
+
+    def renderAll(self,elemList,fname = "test.svg"):
+        """ Render all of the elements in elemList to an SVG file.
+        Returns a svgwrite Drawing object.
+        """
+        boxX = 120
+        boxY = 130
+        dwg = svgwrite.Drawing(fname,
+                               size=(toPt(boxX*len(elemList)),toPt(boxY)),
+                               viewBox=("0 0 %d %d" % (boxX*len(elemList),boxY)))
+        n = 0
+        for elemNo in elemList:
+            elemObj = self.getElemObj(elemNo)
+            elemDwg = self.svgrender(elemObj,n*boxX,boxX,boxY)
+            dwg.add(elemDwg)
+            n = n + 1
+
+        if (fname!=None):    
+            dwg.save()
+        return dwg
+        
+
+    
+def offset(pos,dx,dy): return (pos[0]+dx,pos[1]+dy)
+def toPt(val): return "%dpt" % val
 
 
 """
@@ -186,12 +277,15 @@ if (__name__ == "__main__"):
     parser = OptionParser(version="%%prog v%s" % __version__,
             usage="%prog [options] <argument> ...",
             description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
-    #parser.add_option('-p', '--port', dest="port",
-    #    help="Specify port to connect to arduino (Default /dev/ttyUSB0).")
+    parser.add_option('-s', '--svg', dest="svg",
+        help="Write an svg image of the solution to the specified file.")
+    parser.add_option('-p', '--png', dest="png",
+        help="Write a PNG image of the solution to the specified file.")
  
     opts, args  = parser.parse_args()
  
     #print opts
+    #print dir(opts)
     #print args
 
     if (len(args)<1):
@@ -213,6 +307,14 @@ if (__name__ == "__main__"):
             print "found solution - target = %s answer = %s" \
                 % (targetStr,chews.elem2Str(elemList))
             print elemList
+            if opts.svg:
+                print "producing SVG file %s." % opts.svg
+                print chews.renderAll(elemList,fname=opts.svg)
+            if opts.png:
+                print "producing PNG file %s." % opts.png
+                svgStr = chews.renderAll(elemList,fname="tmp.svg").tostring()
+
+                #cairosvg.svg2png(url="tmp.svg",write_to=opts.png)
         else:
             print "Failed to Find Solution for %s" % targetStr
 

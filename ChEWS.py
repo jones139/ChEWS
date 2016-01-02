@@ -34,7 +34,7 @@ import os
 import sys
 
 __appname__ = "ChEWS"
-__author__  = "Graham Jones"
+__author__ = "Graham Jones"
 __version__ = "0.1"
 __license__ = "GNU GPL 3.0 or later"
 
@@ -44,9 +44,9 @@ class ChEWS:
     elemArray = []
     maxElemNo = None
     debug = False
-    
+
     #####################################################
-    def __init__(self,debug=False):
+    def __init__(self, debug=False):
         """
         Read the periodicTable.json file of element data into an array of
         element objects elemArray.
@@ -71,8 +71,8 @@ class ChEWS:
         for elemObj in self.periodicTable['lanthanoids']:
                 self.elemArray.append(elemObj)
         for elemObj in self.periodicTable['actinoids']:
-                self.elemArray.append(elemObj)        
-                
+                self.elemArray.append(elemObj)
+
         if (self.debug): print "Loaded data for %d elements " % len(self.elemArray)
         self.maxElemNo = len(self.elemArray)
 
@@ -82,9 +82,11 @@ class ChEWS:
         Write all elements in database to screen
         """
         for elemObj in self.elemArray:
-            print "%d %s (%s)" % (elemObj['number'],elemObj['small'],elemObj['name'])
+            print "%d %s (%s)" % (elemObj['number'],
+                                  elemObj['small'],
+                                  elemObj['name'])
 
-    #####################################################
+    # ####################################################
     def elem2Str(self, elemList):
         """
         Convert a list of atomic numbers into a string of element
@@ -94,7 +96,7 @@ class ChEWS:
         if (elemList is None):
             print "elem2Str - empty list provided returning empty string"
             return outString
-        
+
         for elemNo in elemList:
             found = False
             for elemObj in self.elemArray:
@@ -109,9 +111,8 @@ class ChEWS:
         # print outString
         return outString
 
-
-    #####################################################
-    def isPartMatch(self,targetStr,curStr):
+    # ####################################################
+    def isPartMatch(self, targetStr, curStr):
         """
         Checks to see if the characters in curStr match the
         start of targetStr.   Comparison is not case sensitive.
@@ -177,11 +178,10 @@ class ChEWS:
                 elif (self.isPartMatch(targetStr, self.elem2Str(elemList))):
                     if (self.debug): print "Partial Match Found - adding another element"
                     elemList.append(0)
-            
 
-    #####################################################
+    # ####################################################
 
-    def getElemObj(self,elemNo):
+    def getElemObj(self, elemNo):
         """
         Return the python object representing element with atomic number
         elemNo.  Returns None if elemNo is not found in the database.
@@ -191,7 +191,7 @@ class ChEWS:
                 return elemObj
         return None
 
-    def svgrender(self, elemObj, xpos=0, boxX=120, boxY=130):
+    def svgrender(self, elemObj, xpos=0, boxX=120, boxY=130, colour=True):
         """
         Render an element elemObj into an SVG file and return the svgwrite
         Drawing object.   xpos is the positon of the objects in the drawing.
@@ -205,12 +205,21 @@ class ChEWS:
         # place!
         dwg = svgwrite.Drawing(None,
                                size=(toPt(boxX), toPt(boxY)),
-                               viewBox=("%d %d %d %d" %
-                                        (offset((0, 0), -xpos, 0) +
-                                         offset((boxX, boxY), 0, 0))))
+                               insert=(xpos, 0),
+                               # viewBox=("%d %d %d %d" %
+                               #         (offset((0, 0), -xpos, 0) +
+                               #          offset((boxX, boxY), 0, 0)))
+        )
+
+        if (colour):
+            # decide what colour to use
+            fillStr = 'red'
+        else:
+            fillStr = 'white'
+
         dwg.add(dwg.rect((0, 0), (boxX, boxY),
                          stroke='black',
-                         fill='white'))
+                         fill=fillStr))
 
         textOrigin = (5, smallFontSize+fontSize)
 

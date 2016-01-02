@@ -99,6 +99,10 @@ The web interface is very simple - it is written in php and displays an html for
 <p>The source code for the solver and this simple web interface is available on
 <a href="https://github.com/jones139/ChEWS">GitHub</a></p>
 
+<h2>Why?</h2>
+<p>Why bother making this?  The simple answer is 'because I can' - we spent some time before christmas solving some words manually, and I would always prefer to put effort into teaching a computer to do the tedious work rather than doing it myself (even though it probably took 5 times longer to teach the computer than I spend doing it myself!).</p>
+<p>There are other tools like this available on the internet, but they do not publish the source code, and I thought some people may like to see how these things are done, so I wrote another version.....</p>
+
 <h2>Contact</h2>
 <p>
 If you have any queries, please email grahamjones139@gmail.com

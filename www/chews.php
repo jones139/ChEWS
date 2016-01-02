@@ -3,7 +3,7 @@
 <html>
 <head>
 <style>
-.error {color: #FF0000;}
+.error {color: #FF0000;font-size: 150%; font-weight: bold;}
 </style>
 </head>
 <body> 
@@ -69,8 +69,8 @@ if ($word!="") {
        echo "<h3>Image</h3>";
        echo "<img src=".PATH_SVG_WWW.basename($svgName).">";
     } else {
-      echo "<p>No Solution Found, sorry!<br/>";
-      #echo "<p>chewsRetval=".$chewsRetval."</p>";
+      echo "<p class=\"error\">No Solution Found, sorry!<br/>";
+      #echo "<p class=\"error\">chewsRetval=".$chewsRetval."</p>";
       # foreach ($chewsOutput as $line) {
       # 	       echo "chewsOutput = ".$line."<br/>";  
       # 	       }

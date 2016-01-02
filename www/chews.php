@@ -11,7 +11,7 @@
 <?php
 // Configuration
 define('PATH_SVG_FS','/home/graham/ChEWS/www/tmp');
-define('PATH_SVG_WWW','/chews/tmp/');
+define('PATH_SVG_WWW','tmp/');
 
 // define variables and set to empty values
 $wordErr = "";

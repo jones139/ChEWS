@@ -65,13 +65,18 @@ class ChEWS:
         if (self.debug): print "Loaded data for %d element groups from file" \
             % len(self.periodicTable['table'])
 
+        groupNo = 0
         for elemGroup in self.periodicTable['table']:
             for elemObj in elemGroup['elements']:
+                elemObj['groupNo'] = groupNo
                 self.elemArray.append(elemObj)
+            groupNo = groupNo + 1
         for elemObj in self.periodicTable['lanthanoids']:
                 self.elemArray.append(elemObj)
+                elemObj['groupNo'] = 8
         for elemObj in self.periodicTable['actinoids']:
                 self.elemArray.append(elemObj)
+                elemObj['groupNo'] = 9
 
         if (self.debug): print "Loaded data for %d elements " % len(self.elemArray)
         self.maxElemNo = len(self.elemArray)
@@ -191,14 +196,40 @@ class ChEWS:
                 return elemObj
         return None
 
+    def getElemColour(self, elemObj):
+        groupNo = elemObj['groupNo']
+        if self.debug: print elemObj
+
+        colourDict = {
+            0: 'white',
+            1: 'red',
+            2: 'orange',
+            3: 'lightblue',
+            4: 'green',
+            5: 'green',
+            6: 'purple',
+            7: 'pink',
+            8: 'mediumpurple',
+            9: 'yellow',
+            10: 'darkgreen'
+        }
+
+        if groupNo in colourDict.keys():
+            colourStr = colourDict[groupNo]
+        else:
+            print "Error - Group Number %d not in colourDict" % groupNo
+            colourStr = 'white'
+
+        return colourStr
+            
     def svgrender(self, elemObj, xpos=0, boxX=120, boxY=130, colour=True):
         """
         Render an element elemObj into an SVG file and return the svgwrite
         Drawing object.   xpos is the positon of the objects in the drawing.
         boxX and boxY are the size of the drawing.
         """
-        fontSize = 70
-        smallFontSize = fontSize/5
+        fontSize = 60
+        smallFontSize = fontSize/4
 
         # No, I don't know why the viewbox offset is -xpos rather than xpos
         # either, but it has to be negative for them to appear in the right
@@ -213,7 +244,7 @@ class ChEWS:
 
         if (colour):
             # decide what colour to use
-            fillStr = 'red'
+            fillStr = self.getElemColour(elemObj)
         else:
             fillStr = 'white'
 
@@ -320,7 +351,8 @@ if (__name__ == "__main__"):
 
         (success, elemList) = chews.findNextMatch(targetStr, [])
         if (success):
-            print "found solution - target = %s answer = %s" \
+            print "Found Solution!"
+            print "target = %s answer = %s" \
                 % (targetStr, chews.elem2Str(elemList))
             print elemList
             if opts.svg:
@@ -331,6 +363,7 @@ if (__name__ == "__main__"):
                 svgStr = chews.renderAll(elemList, fname="tmp.svg").tostring()
 
                 # cairosvg.svg2png(url="tmp.svg",write_to=opts.png)
+            print "exiting with return code 0"
             sys.exit(0)
         else:
             print "Failed to Find Solution for %s" % targetStr

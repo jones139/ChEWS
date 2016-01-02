@@ -36,7 +36,7 @@ function test_input($data) {
 <img src="chews.svg">
 <h1>CHemical Element Word Solver (ChEWS)</h1>
 <p>This tool will attempt to spell a word using chemical element symbols
-and produce a periodic table style representation of the word as shown above for 'chews'.</p>
+and produce a periodic table style representation of the word as shown above for 'chews'.   Not all words can be done (e.g. there is no 'J' in element symbols).  Some names that do work include 'Laura', 'Nicola', 'Sam', 'Simon'</p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"> 
    Enter Word: <input type="text" name="word" value="<?php echo $word;?>">   
    <input type="submit" name="submit" value="Submit"> 

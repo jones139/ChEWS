@@ -37,6 +37,8 @@ __license__ = "GNU GPL 3.0 or later"
 
 import json
 import svgwrite
+import os
+import sys
 
 class ChEWS:
     periodicTable = None
@@ -53,7 +55,11 @@ class ChEWS:
         """
         self.debug = debug
         if (self.debug): print "ChEWS.__init__()"
-        f = open("periodicTable.json",'r')
+        scriptDir = os.path.dirname(os.path.realpath(__file__))
+        if (self.debug): print scriptDir
+        dataFname = os.path.join(scriptDir, "periodicTable.json")
+        if (self.debug): print dataFname
+        f = open(dataFname,'r')
         elemJSON = f.read()
         #print elemJSON
         self.periodicTable = json.loads(elemJSON)
@@ -315,7 +321,9 @@ if (__name__ == "__main__"):
                 svgStr = chews.renderAll(elemList,fname="tmp.svg").tostring()
 
                 #cairosvg.svg2png(url="tmp.svg",write_to=opts.png)
+            sys.exit(0)
         else:
             print "Failed to Find Solution for %s" % targetStr
+            sys.exit(1)
 
 

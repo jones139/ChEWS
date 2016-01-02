@@ -15,7 +15,7 @@ define('PATH_SVG_WWW','/chews/tmp/');
 
 // define variables and set to empty values
 $wordErr = "";
-$word = $solution = "";
+$word = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    if (empty($_POST["word"])) {
@@ -37,8 +37,6 @@ function test_input($data) {
 <h1>CHemical Element Word Solver (ChEWS)</h1>
 <p>This tool will attempt to spell a word using chemical element symbols
 and produce a periodic table style representation of the word as shown above for 'chews'.</p>
-<p>The source code for the solver and this simple web interface is available on
-<a href="https://github.com/jones139/ChEWS">GitHub</a></p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"> 
    Enter Word: <input type="text" name="word" value="<?php echo $word;?>">   
    <input type="submit" name="submit" value="Submit"> 
@@ -72,17 +70,40 @@ if ($word!="") {
        echo "<img src=".PATH_SVG_WWW.basename($svgName).">";
     } else {
       echo "<p>No Solution Found, sorry!<br/>";
-      echo "<p>chewsRetval=".$chewsRetval."</p>";
-       foreach ($chewsOutput as $line) {
-       	       echo "chewsOutput = ".$line."<br/>";  
-       	       }
+      #echo "<p>chewsRetval=".$chewsRetval."</p>";
+      # foreach ($chewsOutput as $line) {
+      # 	       echo "chewsOutput = ".$line."<br/>";  
+      # 	       }
        echo "</p>";
     }    
     
 } else {
-    echo "<p><span class=\"error\">not trying to solve for an empty string!</span></p>";
+    echo "<p><span class=\"error\">Please enter a word above and press 'Submit'.</span></p>";
     }
 ?>
+
+<h1>How it Works</h1>
+<h2>Word Solver</h2>
+<p>The ChEWS solver is written in python (file ChEWS.py), and uses the svgwrite library to produce the output images.</p>
+<ul>
+<li>We have a database of all the chemical elements and their symbols.</li>
+<li>Starting with the first letter of the required word, we search through the elements to find the first one that matches the required letter, and add that element to the output list.</li>
+<li>We work our way through each remaining letter in the target word until we find the solution.</li>
+<li>If we have added an element that has added a second letter that does not match the word, we remove it, and look for another possibility.</li>
+<li>If we get to the end of the list of elements without finding a match, we remove the previous element, and try searching again.</li>
+<li>If we remove all elements and can't find a solution, we have failed and give up with the "No Solution Found" message.</li>
+<li>Once we have found a solution, we draw a periodic table style representation of the elements in an output file (a Sclable Vector Graphics (SVG) file).</li>
+</ul>
+<h2>Web Interface</h2>
+The web interface is very simple - it is written in php and displays an html form to request a word.   Once a word has been entered (and the 'submit' button pressed), it calls the ChEWS.py script to look for the solution, and request a SVG image of the solution, which are displayed on the web page.</p>
+<p>The source code for the solver and this simple web interface is available on
+<a href="https://github.com/jones139/ChEWS">GitHub</a></p>
+
+<h2>Contact</h2>
+<p>
+If you have any queries, please email grahamjones139@gmail.com
+</p>
+
 
 </body>
 </html>

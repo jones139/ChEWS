@@ -252,10 +252,10 @@ class ChEWS:
                          stroke='black',
                          fill=fillStr))
 
-        textOrigin = (5, smallFontSize+fontSize)
+        textOrigin = (2, smallFontSize+fontSize)
 
         # Main Symbol
-        textElem = dwg.text("", insert=offset(textOrigin, smallFontSize/2, 0))
+        textElem = dwg.text("", insert=offset(textOrigin, smallFontSize/4, 0))
         textElem.add(dwg.tspan(elemObj['small'],
                                font_size="%dpt" % fontSize,
                                fill='black'))
@@ -352,7 +352,7 @@ if (__name__ == "__main__"):
         (success, elemList) = chews.findNextMatch(targetStr, [])
         if (success):
             print "Found Solution!"
-            print "target = %s answer = %s" \
+            print "target = %s,  answer = %s." \
                 % (targetStr, chews.elem2Str(elemList))
             print elemList
             if opts.svg:

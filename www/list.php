@@ -23,11 +23,11 @@ define('PATH_SVG_WWW','tmp/');
       $ext = pathinfo($file,PATHINFO_EXTENSION);
       #echo "filename:" . $file . " - ext = ".$ext."<br>";
       if ($ext == "svg") {
-         echo "<img src='".PATH_SVG_WWW.$file."'>";
+         echo "<img src='".PATH_SVG_WWW.$file."'><br/>";
       }
     }
     closedir($dh);
   }
-
+?>
 </body>
 </html>

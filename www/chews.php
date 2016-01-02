@@ -33,7 +33,7 @@ function test_input($data) {
 }
 ?>
 
-<img src="chews.png" alt="CHeWS Sample Image">
+<img src="chews.png" alt="ChEWS">
 <h1>CHemical Element Word Solver (ChEWS)</h1>
 <p>This tool will attempt to spell a word using chemical element symbols
 and produce a periodic table style representation of the word as shown above for 'chews'.   Not all words can be done (e.g. there is no 'J' in element symbols).  Some names that do work include 'Laura', 'Nicola', 'Sam', 'Simon'</p>

@@ -9,6 +9,8 @@
 <body> 
 
 <?php
+include 'config.php';
+include 'database.php';
 // Configuration
 define('PATH_SVG_FS','/home/graham/ChEWS/www/tmp');
 define('PATH_SVG_WWW','tmp/');
@@ -68,6 +70,7 @@ if ($word!="") {
        echo "<p>";
        echo "<h3>Image</h3>";
        echo "<img src=".PATH_SVG_WWW.basename($svgName).">";
+       writeToDb($word,True);
     } else {
       echo "<p class=\"error\">No Solution Found, sorry!<br/>";
       #echo "<p class=\"error\">chewsRetval=".$chewsRetval."</p>";
@@ -75,11 +78,13 @@ if ($word!="") {
       # 	       echo "chewsOutput = ".$line."<br/>";  
       # 	       }
        echo "</p>";
+       writeToDb($word,False);
     }    
     
 } else {
     echo "<p><span class=\"error\">Please enter a word above and press 'Submit'.</span></p>";
     }
+
 ?>
 
 <h1>How it Works</h1>

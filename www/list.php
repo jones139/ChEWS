@@ -14,6 +14,12 @@
 <h1>CHemical Element Word Solver (ChEWS)</h1>
 
 <?php
+#######################
+# Database Statistics
+#######################
+
+
+
 // Configuration
 define('PATH_SVG_FS','/home/graham/ChEWS/www/tmp');
 define('PATH_SVG_WWW','tmp/');

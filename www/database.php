@@ -27,6 +27,7 @@ function connectToDb() {
 function isWordInDb($word) {
 	 # return the number of times the word appears in
 	 # the db (or 0 = false if it does not).
+	 global $debug;
 	 $word = strtolower($word);
 	 if ($debug) echo "<br/>isWordInDb() - word=".$word."<br/>";
 	 $conn = connectToDb();
@@ -47,9 +48,78 @@ function isWordInDb($word) {
          }
 }
 
+function getStatistics() {
+	 # returns an array of the count of words in the database
+	 # [total, success, failure]
+	 global $debug;
+	 if ($debug) echo "<br/>getStatistics().<br/>";
+	 $conn = connectToDb();
+	 $sql = "select count(word) from words where success=1";
+	 $smt = $conn->prepare($sql);
+	 if ($smt->execute() === TRUE) {
+ 	     $smt-> bind_result($count);
+ 	     $smt-> fetch();
+	     $smt->close();
+             if ($debug) echo "sql execute ok - success count = ".$count."<br/>";
+	     $successCount = $count;
+         } else {
+             echo "Error: " . $sql . "<br>" . $conn->error;
+             $conn->close();
+	     return -1;
+         }	 
+	 $sql = "select count(word) from words where success=0";
+	 $smt = $conn->prepare($sql);
+	 if ($smt->execute() === TRUE) {
+ 	     $smt-> bind_result($count);
+ 	     $smt-> fetch();
+	     $smt->close();
+	     $conn->close();
+             if ($debug) echo "sql execute ok - fail count = ".$count."<br/>";
+	     $failCount = $count;
+         } else {
+             echo "Error: " . $sql . "<br>" . $conn->error;
+             $conn->close();
+	     return -1;
+         }	 
+	 return ["success" => $successCount,
+	 	 "fail" => $failCount,
+		 "total" => $successCount+$failCount
+		 ];
+}
+
+function getWords($success) {
+	 # return an array of words in the database that are flagged
+	 # as success being equal to $success.
+	 global $debug;
+	 if ($debug) echo "<br/>getWords() - success=".$success."<br/>";
+	 $conn = connectToDb();
+	 $sql = "select word,wordcount from words where success=? order by word";
+	 $smt = $conn->prepare($sql);
+	 $smt->bind_param("i",$success);	 
+	 if ($smt->execute() === TRUE) {
+	     $resultArr = [];
+ 	     $smt-> bind_result($word,$wordCount);
+ 	     while ($smt-> fetch()) {
+	     	$resultArr[] = [$word,$wordCount];   
+	     }
+	     $smt->close();
+	     $conn->close();
+             if ($debug) echo "sql execute ok - resultArr = <br/>";
+	     if ($debug) var_dump($resultArr);
+	     return $resultArr;
+         } else {
+             echo "Error: " . $sql . "<br>" . $conn->error;
+             $conn->close();
+	     return -1;
+         }
+}
+
+
+
 function getWordCount($word) {
 	 # Returns the wordcount parameter for word $word,
 	 # or zero if $word is not in the database.
+	 global $debug;
 	 $word = strtolower($word);
 	 if ($debug) echo "<br/>getWordCount() - word=".$word."<br/>";
 	 $conn = connectToDb();
@@ -73,6 +143,7 @@ function getWordCount($word) {
 
 function incrementWordCount($word) {
 	 # Increments the wordCount for word $word
+	 global $debug;
 	 $word = strtolower($word);
 	 if ($debug) echo "<br/>incrementWordCount() - word=".$word."<br/>";
 	 $conn = connectToDb();
@@ -83,11 +154,11 @@ function incrementWordCount($word) {
 	 $smt = $conn->prepare($sql);
 	 $smt->bind_param("is",$wordCount,$word);	 
 	 if ($smt->execute() === TRUE) {
- 	     $smt-> bind_result($result);
- 	     $smt-> fetch();
+ 	     #$smt-> bind_result($result);
+ 	     #$smt-> fetch();
 	     $smt->close();
 	     $conn->close();
-             if ($debug) echo "sql execute ok - result = ".$result."<br/>";
+             if ($debug) echo "sql execute ok <br/>";
 	     return $wordcount;
          } else {
              echo "Error: " . $sql . "<br>" . $conn->error;
@@ -101,6 +172,7 @@ function incrementWordCount($word) {
 function writeToDb($word,$success) {
 	 # write $word to the db.  If it already exists, the word count in 
 	 # the database is incremented instead.
+	 global $debug;
 	 $word = strtolower($word);
 	 $count = isWordInDb($word);
 	 $wordcount = getWordcount($word);

@@ -17,9 +17,37 @@
 #######################
 # Database Statistics
 #######################
+include 'database.php';
+$stats = getStatistics();
+$successWords = getWords(True);
+$failWords = getWords(False);
+
+echo "<h3> Database Contains ".$stats['success']." words with solutions</h3>";
+$lastWord = "";
+foreach ($successWords as $wordData) {
+   if ($lastWord!="")
+       if (substr($lastWord,0,1) != substr($wordData[0],0,1)) 
+           echo "<br/>";
+       else
+           echo ", ";
+   echo $wordData[0]." (".$wordData[1].")";
+   $lastWord = $wordData[0];
+}
+
+echo "<h3> Database Contains ".$stats['fail']." words without solutions</h3>";
+$lastWord = "";
+foreach ($failWords as $wordData) {
+   if ($lastWord!="")
+       if (substr($lastWord,0,1) != substr($wordData[0],0,1)) 
+           echo "<br/>";
+       else
+           echo ", ";
+   echo $wordData[0]." (".$wordData[1].")";
+   $lastWord = $wordData[0];
+}
 
 
-
+echo "<h3>Images Currently Stored on Server</h3>";
 // Configuration
 define('PATH_SVG_FS','/home/graham/ChEWS/www/tmp');
 define('PATH_SVG_WWW','tmp/');
